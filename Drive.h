@@ -2,6 +2,7 @@
 #define __INCLUDE_DRIVE__
 
 #include<Arduino.h>
+#include"Bearing.h"
 
 static const int motor_L_A = 9;
 static const int motor_L_B = 11;
@@ -20,6 +21,7 @@ class Drive{
     void backward(int speed, int steer);
     void left(int speed);
     void right(int speed);
+    void toBearing(Bearing B);
 };
 
 #endif

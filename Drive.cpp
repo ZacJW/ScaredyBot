@@ -64,3 +64,22 @@ void Drive::right(int speed){
   drive_L(speed);
   drive_R(-speed);
 }
+
+void Drive::toBearing(Bearing B){
+  // Get current bearing
+  Bearing current;
+  int diff = current.to(B)
+  while (abs(diff) > 10){
+     if(diff < 0){
+      // Drive Left
+      left(200);
+     }else{
+      // Drive Right
+      right(200);
+     }
+     delay(10);
+     // Get new bearing
+     // current = getBearing();
+     diff = current.to(B);
+  }
+}
