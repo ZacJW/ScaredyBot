@@ -1,3 +1,5 @@
+#include"Bearing.h"
+
 //const int mic_1 = 7;
 //const int mic_2 = 8;
 //const int mic_3 = 9;
