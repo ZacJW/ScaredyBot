@@ -22,6 +22,7 @@ class Drive{
     void left(int speed);
     void right(int speed);
     void toBearing(Bearing B);
+    void alongBearing(Bearing B, int ms, int speed);
 };
 
 #endif

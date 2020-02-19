@@ -82,4 +82,10 @@ void Drive::toBearing(Bearing B){
      // current = getBearing();
      diff = current.to(B);
   }
+  forward(0);
 }
+
+void Drive::alongBearing(Bearing B, int ms, int speed){
+  
+}
+

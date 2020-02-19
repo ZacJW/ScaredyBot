@@ -1,4 +1,10 @@
+#include <Wire.h>
+#include <FaBo9Axis_MPU9250.h>
+#include "mpu_bias.h"
 #include"Bearing.h"
+
+
+FaBo9Axis mpu;
 
 //const int mic_1 = 7;
 //const int mic_2 = 8;
@@ -27,6 +33,16 @@ void setup(){
   pinMode(mic_1, INPUT);
   pinMode(mic_2, INPUT);
   pinMode(mic_3, INPUT);
+  if (!mpu.begin()) {
+    // flash pin 13 led indicating mpu connection failure
+    pinMode(13, OUTPUT);
+    while(1){
+      digitalWrite(13,HIGH);
+      delay(100);
+      digitalWrite(13,LOW);
+      delay(100);
+    }
+  }
 }
 
 void loop(){
