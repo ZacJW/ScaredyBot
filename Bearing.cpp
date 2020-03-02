@@ -1,5 +1,7 @@
-#include"Bearing.h"
-
+#include "Bearing.h"
+Bearing::Bearing(){
+  this->b = 0;
+}
 Bearing::Bearing(int value){
   this->b = modulo(value, 360);
 }

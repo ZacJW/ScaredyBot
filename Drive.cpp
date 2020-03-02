@@ -1,5 +1,7 @@
-#include"Drive.h"
-
+#include "Drive.h"
+#include <FaBo9Axis_MPU9250.h>
+#include "mag_bearing.h"
+#include "Bearing.h"
 
 Drive::Drive(){
   // Set H-bridge control pins to OUTPUT and pwm to 0
@@ -65,10 +67,10 @@ void Drive::right(int speed){
   drive_R(-speed);
 }
 
-void Drive::toBearing(Bearing B){
+void Drive::toBearing(Bearing B, FaBo9Axis &MPU){
   // Get current bearing
-  Bearing current;
-  int diff = current.to(B)
+  Bearing current = getBearing(MPU);
+  int diff = current.to(B);
   while (abs(diff) > 10){
      if(diff < 0){
       // Drive Left
@@ -79,13 +81,20 @@ void Drive::toBearing(Bearing B){
      }
      delay(10);
      // Get new bearing
-     // current = getBearing();
+     current = getBearing(MPU);
      diff = current.to(B);
   }
   forward(0);
 }
 
-void Drive::alongBearing(Bearing B, int ms, int speed){
-  
+void Drive::setTarget(Bearing B, int speed){
+  this->targetBearing = B;
+  this->targetSpeed = speed;
+}
+
+void Drive::alongTarget(FaBo9Axis &MPU){
+  Bearing current = getBearing(MPU);
+  int diff = current.to(this->targetBearing);
+  forward(this->targetSpeed, diff);
 }
 
