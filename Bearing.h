@@ -5,6 +5,7 @@ class Bearing{
   private:
     int b;
   public:
+    Bearing();
     Bearing(int value);
     int getInt() const;
     Bearing operator +(Bearing const &other) const;
