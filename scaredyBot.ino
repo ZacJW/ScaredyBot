@@ -4,8 +4,13 @@
 #include "Drive.h"
 #include "mag_bearing.h"
 
+const int motor_L_A = 9;
+const int motor_L_B = 11;
+const int motor_R_A = 10;
+const int motor_R_B = 12;
+
 FaBo9Axis mpu;
-Drive d;
+Drive d = Drive(motor_L_A, motor_L_B, motor_R_A, motor_R_B, mpu);
 
 #define mic_1 A0
 #define mic_2 A1
@@ -101,14 +106,14 @@ void loop(){
     scare_time = scare_cooldown;
     Bearing runTo = locateSound(vol_B, vol_FL, vol_FR) + Bearing(180) + getBearing(mpu);
     d.setTarget(runTo, 200);
-    d.toBearing(runTo, mpu);
-    d.alongTarget(mpu);
+    d.toBearing(runTo);
+    d.alongTarget();
   }else if (scare_time > 0){
-    d.alongTarget(mpu);
+    d.alongTarget();
     scare_time--;
   }else{
     d.setTarget(locateSound(vol_B, vol_FL, vol_FR) + getBearing(mpu), 30);
-    d.alongTarget(mpu);
+    d.alongTarget();
   }
   delay(10);
 }

@@ -3,42 +3,47 @@
 #include "mag_bearing.h"
 #include "Bearing.h"
 
-Drive::Drive(){
+Drive::Drive(int L_A, int L_B, int R_A, int R_B, FaBo9Axis &MPU){
   // Set H-bridge control pins to OUTPUT and pwm to 0
-  pinMode(motor_L_A, OUTPUT);
-  pinMode(motor_L_B, OUTPUT);
-  pinMode(motor_R_A, OUTPUT);
-  pinMode(motor_R_B, OUTPUT);
-  analogWrite(motor_L_A, 0);
-  analogWrite(motor_L_B, 0);
-  analogWrite(motor_R_A, 0);
-  analogWrite(motor_R_B, 0);
+  pinMode(L_A, OUTPUT);
+  pinMode(L_B, OUTPUT);
+  pinMode(R_A, OUTPUT);
+  pinMode(R_B, OUTPUT);
+  analogWrite(L_A, 0);
+  analogWrite(L_B, 0);
+  analogWrite(R_A, 0);
+  analogWrite(R_B, 0);
+  this->L_A = L_A;
+  this->L_B = L_B;
+  this->R_A = R_A;
+  this->R_B = R_B;
+  this->MPU = MPU;
 }
 
 void Drive::drive_L(int speed){
   if (speed < 0){
     // Reverse
     speed = (speed < -255) ? 255 : -speed;
-    analogWrite(motor_L_A, 0);
-    analogWrite(motor_L_B, speed);
+    analogWrite(L_A, 0);
+    analogWrite(L_B, speed);
   }else{
     // Forward
     speed = (speed > 255) ? 255 : speed;
-    analogWrite(motor_L_A, speed);
-    analogWrite(motor_L_B, 0);
+    analogWrite(L_A, speed);
+    analogWrite(L_B, 0);
   }
 }
 void Drive::drive_R(int speed){
   if (speed < 0){
     // Reverse
     speed = (speed < -255) ? 255 : -speed;
-    analogWrite(motor_R_A, 0);
-    analogWrite(motor_R_B, speed);
+    analogWrite(R_A, 0);
+    analogWrite(R_B, speed);
   }else{
     // Forward
     speed = (speed > 255) ? 255 : speed;
-    analogWrite(motor_R_A, speed);
-    analogWrite(motor_R_B, 0);
+    analogWrite(R_A, speed);
+    analogWrite(R_B, 0);
   }
 }
 
@@ -67,7 +72,7 @@ void Drive::right(int speed){
   drive_R(-speed);
 }
 
-void Drive::toBearing(Bearing B, FaBo9Axis &MPU){
+void Drive::toBearing(Bearing B){
   // Get current bearing
   Bearing current = getBearing(MPU);
   int diff = current.to(B);
@@ -92,7 +97,7 @@ void Drive::setTarget(Bearing B, int speed){
   this->targetSpeed = speed;
 }
 
-void Drive::alongTarget(FaBo9Axis &MPU){
+void Drive::alongTarget(){
   Bearing current = getBearing(MPU);
   int diff = current.to(this->targetBearing);
   forward(this->targetSpeed, diff);
