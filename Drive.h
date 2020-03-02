@@ -15,7 +15,7 @@ class Drive{
     void drive_L(int speed);
     void drive_R(int speed);
     Bearing targetBearing;
-    int tartgetSpeed;
+    int targetSpeed;
   public:
     Drive();
     void forward(int speed);
@@ -26,7 +26,7 @@ class Drive{
     void right(int speed);
     void toBearing(Bearing B, FaBo9Axis &MPU);
     void setTarget(Bearing B, int speed);
-    void alongBearing(FaBo9Axis &MPU);
+    void alongTarget(FaBo9Axis &MPU);
 };
 
 #endif
