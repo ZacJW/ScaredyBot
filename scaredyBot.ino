@@ -1,20 +1,13 @@
 #include <Wire.h>
 #include <FaBo9Axis_MPU9250.h>
+#include "config.h"
 #include "Bearing.h"
 #include "Drive.h"
 #include "mag_bearing.h"
 
-const int motor_L_A = 9;
-const int motor_L_B = 11;
-const int motor_R_A = 10;
-const int motor_R_B = 12;
-
 FaBo9Axis mpu;
-Drive d = Drive(motor_L_A, motor_L_B, motor_R_A, motor_R_B, mpu);
+Drive d = Drive(MOTOR_L_A, MOTOR_L_B, MOTOR_R_A, MOTOR_R_B, mpu);
 
-#define mic_1 A0
-#define mic_2 A1
-#define mic_3 A2
 
 struct sample_data {
   int min_B = 1023;
@@ -29,21 +22,21 @@ sample_data sample(int sample_size); // work-around prototype for annoying IDE a
 sample_data sample(int sample_size){
   sample_data data;
   for (int i = 0; i < sample_size; i++){
-    int B = analogRead(mic_1);
+    int B = analogRead(MIC_1);
     if (B < data.min_B){
       data.min_B = B;
     }
     if (B > data.max_B){
       data.max_B = B;
     }
-    int FL = analogRead(mic_2);
+    int FL = analogRead(MIC_2);
     if (FL < data.min_FL){
       data.min_FL = FL;
     }
     if (FL > data.max_FL){
       data.max_FL = FL;
     }
-    int FR = analogRead(mic_3);
+    int FR = analogRead(MIC_3);
     if (FR < data.min_FR){
       data.min_FR = FR;
     }
@@ -73,14 +66,12 @@ Bearing locateSound(int vol_B, int vol_FL, int vol_FR){
   }
 }
 
-const int trigger = 50;
-int scare_time = 0;
-int scare_cooldown = 1000;
+
 
 void setup(){
-  pinMode(mic_1, INPUT);
-  pinMode(mic_2, INPUT);
-  pinMode(mic_3, INPUT);
+  pinMode(MIC_1, INPUT);
+  pinMode(MIC_2, INPUT);
+  pinMode(MIC_3, INPUT);
   if (!mpu.begin()) {
     // flash pin 13 led indicating mpu connection failure
     pinMode(13, OUTPUT);
@@ -94,27 +85,28 @@ void setup(){
 }
 
 void loop(){
-  sample_data data = sample(50);
+  static int scare_time = 0;
+  sample_data data = sample(SAMPLE_COUNT);
   int vol_B = data.max_B - data.min_B;
   int vol_FL = data.max_FL - data.min_FL;
   int vol_FR = data.max_FR - data.min_FR;
   int vol = vol_B;
   vol = (vol_FL > vol) ? vol_FL : vol;
   vol = (vol_FR > vol) ? vol_FR : vol;
-  if (vol > trigger){
+  if (vol > LOUD_VOLUME){
     // Should now become scared
-    scare_time = scare_cooldown;
+    scare_time = SCARE_COOLDOWN;
     Bearing runTo = locateSound(vol_B, vol_FL, vol_FR) + Bearing(180) + getBearing(mpu);
-    d.setTarget(runTo, 200);
+    d.setTarget(runTo, SCARED_SPEED);
     d.toBearing(runTo);
     d.alongTarget();
   }else if (scare_time > 0){
     d.alongTarget();
     scare_time--;
   }else{
-    d.setTarget(locateSound(vol_B, vol_FL, vol_FR) + getBearing(mpu), 30);
+    d.setTarget(locateSound(vol_B, vol_FL, vol_FR) + getBearing(mpu), NORMAL_SPEED);
     d.alongTarget();
   }
-  delay(10);
+  delay(LOOP_DELAY);
 }
 
