@@ -29,8 +29,8 @@ void Drive::drive_L(int speed){
   }else{
     // Forward
     speed = (speed > 255) ? 255 : speed;
-    analogWrite(L_A, speed);
     analogWrite(L_B, 0);
+    analogWrite(L_A, speed);
   }
 }
 void Drive::drive_R(int speed){
