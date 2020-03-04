@@ -12,6 +12,11 @@ const int MOTOR_R_B = 12;
 #define MIC_2 A1
 #define MIC_3 A2
 
+// Microphone Posistions
+int MIC_POS_1 = 180;
+int MIC_POS_2 = 300;
+int MIC_POS_3 = 60;
+
 // Microphone Sample Count
 const int SAMPLE_COUNT = 50;
 
